@@ -1,172 +1,157 @@
 # Machine-Learning-class-project-Vid-games-
 🎮 Video Game Hit vs. Non-Hit Prediction
-
 Machine Learning Classification Project
+<p align="center"> <img src="https://img.shields.io/badge/Python-3.10-blue"/> <img src="https://img.shields.io/badge/Machine%20Learning-Classification-orange"/> <img src="https://img.shields.io/badge/Status-Completed-success"/> </p>
+🔍 Project Overview
+<!-- ===================== HERO ===================== -->
+<div align="center">
+
+# 🎮 What Makes a Video Game a “Hit”?
+### A Machine Learning Classification Project (Hit vs. Non-Hit)
+
+<a href="https://www.kaggle.com/datasets/thedevastator/discovering-hidden-trends-in-global-video-games">
+  <img alt="Dataset" src="https://img.shields.io/badge/Dataset-Kaggle-blue">
+</a>
+<img alt="Python" src="https://img.shields.io/badge/Language-Python-informational">
+<img alt="ML" src="https://img.shields.io/badge/ML-Classification-orange">
+<img alt="Best Model" src="https://img.shields.io/badge/Best%20Model-Random%20Forest-success">
+
+<br/>
+
+<p>
+Predict whether a game is a <b>Hit</b> (Review ≥ 75) using platform, genre, publisher, year, and global/regional sales.
+</p>
+
+</div>
+
+---
+
+## 🔥 TL;DR Results (from our final model evaluation)
+<div align="center">
+
+<!-- KPI CARDS -->
+<table>
+  <tr>
+    <td align="center" style="padding:12px 18px; border:1px solid #ddd; border-radius:14px;">
+      <div style="font-size:13px; color:#666;">Best Model</div>
+      <div style="font-size:22px;"><b>Random Forest</b></div>
+    </td>
+    <td align="center" style="padding:12px 18px; border:1px solid #ddd; border-radius:14px;">
+      <div style="font-size:13px; color:#666;">Accuracy</div>
+      <div style="font-size:22px;"><b>80%</b></div>
+    </td>
+    <td align="center" style="padding:12px 18px; border:1px solid #ddd; border-radius:14px;">
+      <div style="font-size:13px; color:#666;">ROC-AUC</div>
+      <div style="font-size:22px;"><b>0.81</b></div>
+    </td>
+    <td align="center" style="padding:12px 18px; border:1px solid #ddd; border-radius:14px;">
+      <div style="font-size:13px; color:#666;">Hit Recall (Class 1)</div>
+      <div style="font-size:22px;"><b>0.94</b></div>
+    </td>
+  </tr>
+</table>
 
-📌 Project Overview
+</div>
 
-This project explores whether video games can be classified as “Hit” or “Non-Hit” based on their attributes using supervised machine learning models. By analyzing global video game metadata and review scores, the project aims to uncover patterns that explain what makes a video game successful and to build predictive models that can support data-driven decision-making in the gaming industry.
+> **Key takeaway:** Models were generally better at identifying **hits** than **non-hits**, even after using class weights.
 
-This project was completed as part of a Machine Learning course in the Master of Science in Business Analytics program and emphasizes both predictive accuracy and business interpretability.
+---
 
-🎯 Business Problem
+## 🎯 Problem Statement
+Can video games be classified as a **“hit”** or **“non-hit”** using attributes such as **platform, genre, publisher, and global sales**?
 
-Video game development is costly and risky, with success often dependent on uncertain market reception. Being able to predict whether a game is likely to become a hit can help developers and publishers:
+### Hit Definition (Metacritic-style threshold)
+- **Hit (1):** Review score ≥ **75**
+- **Non-Hit (0):** Review score < **75**
 
-Allocate marketing budgets more effectively
+---
 
-Optimize product portfolios across genres and platforms
+## 📊 Dataset
+**Discovering Hidden Trends in Global Video Games** (Kaggle)  
+- **Original rows:** 1,907  
+- **After cleaning:** **1,878** (dropped 31 missing values)  
+- **Variables:** 13 total (categorical + numerical)
 
-Reduce financial risk before launch
+🔗 Kaggle: https://www.kaggle.com/datasets/thedevastator/discovering-hidden-trends-in-global-video-games
 
-This project formulates the problem as a binary classification task:
+---
 
-Hit (1): Review score ≥ 75
+## 🧹 Data Preparation
+- Dropped missing values (31 rows) → **1,878** rows remaining
+- Created target variable: `is_hit = 1 if review >= 75 else 0`
+- **Train/Test split:** 80/20 (consistent across all models)
+- Used **class weights** to address imbalance (hit vs non-hit)
+- Dropped leakage/ID columns: **Index**, **Rank** (Rank lets the model “cheat”)
 
-Non-Hit (0): Review score < 75
+---
 
-The classification threshold is based on the Metacritic rating system, a widely used industry benchmark.
+## 🧠 Models Tested
+- Logistic Regression
+- Naive Bayes
+- Decision Tree
+- Random Forest (best overall)
 
-📊 Dataset
+---
 
-Name: Discovering Hidden Trends in Global Video Games
+## 🧪 Performance Summary (Test Set)
 
-Source: Kaggle
+### Overall (Accuracy + ROC-AUC)
+| Model | Accuracy | ROC-AUC |
+|---|---:|---:|
+| Logistic Regression | **73%** | **0.780** |
+| Decision Tree | **~70%** | **0.756** |
+| Random Forest | **80%** ✅ | **0.81** |
+| Naive Bayes | **~67%** | **0.843** |
 
-Link: https://www.kaggle.com/datasets/thedevastator/discovering-hidden-trends-in-global-video-games
+> Note: Naive Bayes had the **highest AUC (0.843)** but lower overall accuracy and different error tradeoffs.
 
-Usability Score: 10 / 10
+---
 
-Published: ~3 years ago
+### Class-Level Metrics (Precision / Recall / F1)
+**Logistic Regression**
+| Class | Precision | Recall | F1 |
+|---|---:|---:|---:|
+| Non-Hit (0) | 0.48 | 0.68 | 0.56 |
+| Hit (1) | 0.87 | 0.74 | 0.80 |
 
-Total Observations: 1,907 video games
+**Decision Tree**
+| Class | Precision | Recall | F1 |
+|---|---:|---:|---:|
+| Non-Hit (0) | 0.45 | 0.71 | 0.55 |
+| Hit (1) | 0.87 | 0.69 | 0.77 |
 
-Key Features
+**Random Forest (Best Accuracy)**
+| Class | Precision | Recall | F1 |
+|---|---:|---:|---:|
+| Non-Hit (0) | 0.71 | 0.40 | 0.51 |
+| Hit (1) | 0.82 | 0.94 | 0.88 |
 
-The dataset contains global video game information including:
+**Naive Bayes**
+| Class | Precision | Recall | F1 |
+|---|---:|---:|---:|
+| Non-Hit (0) | 0.91 | 0.38 | 0.53 |
+| Hit (1) | 0.61 | 0.96 | 0.74 |
 
-Title
+---
 
-Platform
 
-Genre
+### 📊 Accuracy by Model
 
-Publisher
+**Logistic Regression — 0.73**  
+<img src="https://progress-bar.xyz/73/?scale=100&title=&width=400" />
 
-Year of release
+**Decision Tree — 0.70**  
+<img src="https://progress-bar.xyz/70/?scale=100&title=&width=400" />
 
-Regional and global sales
+**Random Forest ⭐ — 0.80**  
+<img src="https://progress-bar.xyz/80/?scale=100&title=&width=400" />
 
-Review score
+**Naive Bayes — 0.67**  
+<img src="https://progress-bar.xyz/67/?scale=100&title=&width=400" />
 
-The review score is used to construct the target variable for hit vs. non-hit classification.
 
-🔧 Methodology
-1. Data Preparation
 
-Cleaned and validated dataset
+---
 
-Handled missing values
-
-Encoded categorical variables (e.g., genre, platform, publisher)
-
-Removed variables that could cause data leakage
-
-Created binary target variable based on review score threshold
-
-Split data into training and testing sets
-
-2. Exploratory Data Analysis (EDA)
-
-Examined distribution of hit vs. non-hit games
-
-Analyzed genre and platform popularity trends
-
-Investigated relationships between game attributes and review scores
-
-Identified patterns that informed feature selection and modeling decisions
-
-3. Modeling Approaches
-
-The following supervised classification models were implemented and compared:
-
-Logistic Regression
-
-Interpretable baseline model
-
-Assessed how individual attributes affect the probability of a game being a hit
-
-Naive Bayes
-
-Probability-based classification
-
-Evaluated model performance under conditional independence assumptions
-
-Decision Tree
-
-Tree-based model for intuitive rule-based interpretation
-
-Visualized how different attributes lead to hit vs. non-hit outcomes
-
-Random Forest
-
-Ensemble method combining multiple decision trees
-
-Improved predictive accuracy and reduced overfitting
-
-📈 Model Evaluation
-
-Models were evaluated using standard classification metrics, including:
-
-Accuracy
-
-Precision
-
-Recall
-
-ROC-AUC
-
-Comparisons focused on both predictive performance and interpretability, with an emphasis on understanding practical business implications.
-
-🔍 Key Findings & Insights
-
-Ensemble models such as Random Forest generally outperformed simpler models
-
-Certain genres and platforms showed higher likelihoods of producing hit games
-
-Model interpretability helped translate technical outputs into actionable insights for developers and publishers
-
-Results highlight the importance of aligning game attributes with audience preferences
-
-🧠 Business Implications
-
-Developers can use predictive insights to prioritize projects with higher success probabilities
-
-Publishers can refine launch strategies based on genre and platform trends
-
-Data-driven modeling can complement creative decision-making in the gaming industry
-
-🛠️ Tools & Technologies
-
-Programming Language: Python
-
-Libraries: pandas, numpy, scikit-learn, matplotlib, seaborn
-
-Modeling Techniques: Logistic Regression, Naive Bayes, Decision Tree, Random Forest
-🚀 Future Improvements
-
-Incorporate additional features such as marketing spend or social media metrics
-
-Experiment with advanced models (e.g., Gradient Boosting, XGBoost)
-
-Perform hyperparameter tuning to further optimize model performance
-
-Extend analysis to multi-class success levels instead of binary classification
-
-👤 Author
-
-Edward Dai,
-Meghna Prakash,
-Alex Huang,
-Srinidhi Chevvuri,
-Preme Chinpattanakul
+### 👥 Team
+Edward Dai · Meghna Prakash · Alex Huang · Srinidhi Chevvuri · Preme Chinpattanakul
